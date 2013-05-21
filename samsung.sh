@@ -76,11 +76,6 @@ rm out/target/product/jflteusc/system/build.prop;
 rm out/target/product/n8000/system/build.prop;
 . build_revolt.sh n8000 nightly
 
-# n8010
-
-rm out/target/product/n8010/system/build.prop;
-. build_revolt.sh n8010 nightly
-
 # n8013
 
 rm out/target/product/n8013/system/build.prop;
