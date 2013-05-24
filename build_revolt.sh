@@ -87,7 +87,7 @@ echo -e ""
 echo -e "${bldblu}Starting to build ReVolt ROM for the "$DEVICE" ${txtrst}"
 
 # start compilation
-brunch "revolt_"$DEVICE"-userdebug" -j4;
+brunch "revolt_"$DEVICE"-userdebug" -j16;
 
 # finished? get elapsed time
 res2=$(date +%s.%N)
@@ -97,8 +97,10 @@ sed -i -e 's/revolt_//' $OUT/system/build.prop
 FINAL=`sed -n -e'/ro.revolt.version/s/^.*=//p' $OUT/system/build.prop`
 PACKAGENIGHT=$OUT/$FINAL.zip
 echo -e "${bldblu}Nightly build done ${txtrst}"
+echo -e "${bldblu}Uploading to ReVolt.BasketBuild.com ${txtrst}"
+ncftpput -u revolt basketbuild.com /"$DEVICE"/Nightlies "$PACKAGENIGHT"
 echo -e "${bldblu}Uploading to Goo.IM ${txtrst}"
 scp "$PACKAGENIGHT" johnhany97@upload.goo.im:~/public_html/ReVolt_JB_"$DEVICE"/Nightlies/
-echo -e "${bldblu}Build DONE, Uploaded to Goo.IM${txtrst}"
+echo -e "${bldblu}Build DONE, Uploaded to BasketBuild & Goo.IM${txtrst}"
 res3=$(date +%s.%N)
 echo "${bldgrn}Total time elapsed: ${txtrst}${grn}$(echo "($res3 - $res1) / 60"|bc ) minutes ($(echo "$res3 - $res1"|bc ) seconds) ${txtrst}"

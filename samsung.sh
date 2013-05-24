@@ -71,6 +71,11 @@ rm out/target/product/jfltecan/system/build.prop;
 rm out/target/product/jflteusc/system/build.prop;
 . build_revolt.sh jflteusc nightly
 
+# jfltespr
+
+rm out/target/product/jfltespr/system/build.prop;
+. build_revolt.sh jfltespr nightly
+
 # n8000
 
 rm out/target/product/n8000/system/build.prop;
