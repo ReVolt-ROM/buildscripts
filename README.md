@@ -18,13 +18,20 @@ Building ReVolt ROM
 
 Now you can run the command:
 
-     . build/envsetup.sh && brunch DEVICE
+     . build_revolt.sh DEVICE SYNC CLEAN THREADS
 
 
-- Device: Write the code-name of your device (Must be a supported device)
+- DEVICE: Write the code-name of your device (Must be a supported device)
+- SYNC: Whether to sync or not, write the word "sync" if you want it to sync
+- CLEAN: Whether to clean before build or not
+- THREADS: How many cores to use in the build
 
 Example:
 
-     . build/envsetup.sh && brunch mako
+     . build_revolt.sh mako sync noclean 4
 
-This will build ReVolt ROM for the mako (Nexus 4)
+This will sync the latest sources, NOT clean the out directory, start building ReVolt ROM for the Nexus 4 with 4 threads
+
+     . build_revolt.sh i9100 nosync clean 12
+
+This will NOT sync the sources, clean the out directory, start building ReVolt ROM for the Samsung Galaxy S2 I9100 with 12 cores
