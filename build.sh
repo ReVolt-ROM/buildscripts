@@ -133,7 +133,7 @@ rm -rf out
 repo sync
 
 # Build and upload some devices
-for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
+for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
         export RV_PRODUCT=$dev
         android-build -C -v $ver -o $outdir revolt_$dev-userdebug
         if [ $? -eq 0 ]; then
