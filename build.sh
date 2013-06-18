@@ -1,17 +1,27 @@
 #!/bin/bash
 
 # Set output directory
+if [ "$RELEASE" == "nightly" ]
+then
 outdir=/raid/johnhany97/nightlies
+else
+outdir=/raid/johnhany97/stables
+fi
+
 mkdir -p $outdir
 
 ydate=$(date -d '1 day ago' +"%m/%d/%Y")
-sdate="$2"
+sdate="$4"
 cdate=`date +"%m_%d_%Y"`
 DATE=`date +"%Y%m%d"`
 rdir=`pwd`
 
 # Start timinig
 res1=$(date +%s.%N)
+
+# Define this
+RELEASE="$1"
+OFFICIAL="$2"
 
 # Colorize and add text parameters
 red=$(tput setaf 1)             #  red
@@ -38,8 +48,14 @@ echo -e $red""$txtrst"     \/_/ /_/"$bldcya"  \/_____/"$bldppl"  \/_/    "$bldbl
 echo -e $txtrst""$txtrst" "
 
 # Set version
-ver=nightly-"$DATE"
-export RV_NIGHTLY="$DATE"
+if [ "$RELEASE" == "nightly" ]
+then
+    ver=nightly-"$DATE"
+    export RV_NIGHTLY="$DATE"
+else
+    ver="$OFFICIAL"-stable
+    export RV_BUILD="$OFFICIAL"
+fi
 
 # Remove previous build info
 echo "Removing previous build.prop"
@@ -133,15 +149,57 @@ rm -rf out
 repo sync
 
 # Build and upload some devices
-for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
-        export RV_PRODUCT=$dev
-        android-build -C -v $ver -o $outdir revolt_$dev-userdebug
-        if [ $? -eq 0 ]; then
-                ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
-                scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
-                rm -rf $outdir/revolt_$dev-$ver.zip
-        fi
-done
+if [ "$RELEASE" == "nightly" ]
+then
+	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+		export RV_PRODUCT=$dev
+		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
+	        if [ $? -eq 0 ]; then
+			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
+			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
+			rm -rf $outdir/revolt_$dev-$ver.zip
+		fi
+	done
+else
+	for first in i9100 i9300; do
+        	export RV_PRODUCT=$first
+        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
+        	if [ $? -eq 0 ]; then
+        	        cd ;
+ 			echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
+			cd $outdir && mkdir tmp;
+			mv revolt_$first-$ver.zip tmp/;
+			cd $outdir/tmp/ && unzip revolt_$first-$ver.zip;
+			rm -f -r $outdir/tmp/META-INF/com/google/android/;
+			cp -r /raid/johnhany97/revolt/revolt/i9100/android/ $outdir/tmp/META-INF/com/google/android/;
+			cd ;
+			cp -r /raid/johnhany97/revolt/revolt/i9100/Revolt/ $outdir/tmp/;
+		 	echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
+			cd $ourdir/tmp/ ;
+			rm -f revolt_$first-$ver.zip;
+			echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
+			zip -r -q ReVolt-JB-"$OFFICIAL"-"$first".zip *;
+			cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip $outdir/
+			cd ;
+			echo -e "${bldblu}Clearing the mess done ${txtrst}"
+			cd $outdir && rm -f -r tmp;
+			cd $outdir;
+        	        ncftpput -f login.cfg /$first/ $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
+        	        scp $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
+        	        rm -rf $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
+        	fi
+	done
+
+	for sec in mako grouper maguro manta find5 i9100g yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
+	        export RV_PRODUCT=$sec
+	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
+	        if [ $? -eq 0 ]; then
+	                ncftpput -f login.cfg /$sec/ $outdir/revolt_$sec-$ver.zip
+	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
+	                rm -rf $outdir/revolt_$sec-$ver.zip
+	        fi
+	done
+fi
 
 # Time elapsed for a full set of builds
 res2=$(date +%s.%N)
