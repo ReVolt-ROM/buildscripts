@@ -45,7 +45,7 @@ then
     make clobber ;
     echo -e "Let's start the build !"
 else
-    echo -e "NOT Cleaning"
+    echo -e "Not Cleaning"
 fi
 
 # Remove previous build info
@@ -55,11 +55,11 @@ rm out/target/product/"$DEVICE"/system/build.prop;
 # Sync Latest Sources
 if [ "$SYNC" == "sync" ]
 then
-    echo -e "${cya}Cleaning Up ${txtrst}"
+    echo -e "${cya}Syncing Latest Sources ${txtrst}"
     repo sync -j"$THREADS";
     echo -e "${cya}Latest Sources synced ${txtrst}"
 else
-    echo -e "NOT Cleaning"
+    echo -e "Starting the Build"
 fi
 
 export RV_PRODUCT="$DEVICE"
