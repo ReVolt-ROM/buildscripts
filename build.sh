@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Set output directory
-if [ "$RELEASE" == "nightly" ]
+if [ "$RELEASE" == "official" ]
 then
-outdir=/raid/johnhany97/nightlies
-else
 outdir=/raid/johnhany97/stables
+else
+outdir=/raid/johnhany97/nightlies
 fi
 
 mkdir -p $outdir
 
 ydate=$(date -d '1 day ago' +"%m/%d/%Y")
-sdate="$4"
+sdate="$3"
 cdate=`date +"%m_%d_%Y"`
 DATE=`date +"%Y%m%d"`
 rdir=`pwd`
@@ -132,15 +132,16 @@ echo "" >> "$rdir"/changelog.txt
 done
 
 # Create Version Changelog
-if [ "$RELEASE" == "nightly" ]
+if [ "$RELEASE" == "official" ]
 then
-echo "Generating and Uploading Changelog for Nightly"
-    cp changelog.txt changelog_"$DATE".txt
-    ncftpput -f login.cfg /changelogs/nightlies changelog_"$DATE".txt
-else
-echo "Generating and Uploading Changelog for Official Release"
+    echo "Generating and Uploading Changelog for Official Release"
     cp changelog.txt changelog_"$RV_BUILD".txt
     ncftpput -f login.cfg /changelogs changelog_"$RV_BUILD".txt
+else
+
+    echo "Generating and Uploading Changelog for Nightly"
+    cp changelog.txt changelog_"$DATE".txt
+    ncftpput -f login.cfg /changelogs/nightlies changelog_"$DATE".txt
 fi
 
 # Switch to the build tree, clean and sync
@@ -149,18 +150,8 @@ rm -rf out
 repo sync
 
 # Build and upload some devices
-if [ "$RELEASE" == "nightly" ]
+if [ "$RELEASE" == "official" ]
 then
-	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
-		export RV_PRODUCT=$dev
-		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
-	        if [ $? -eq 0 ]; then
-			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
-			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
-			rm -rf $outdir/revolt_$dev-$ver.zip
-		fi
-	done
-else
 	for first in i9100 i9300; do
         	export RV_PRODUCT=$first
         	android-build -C -v $ver -o $outdir revolt_$first-userdebug
@@ -198,6 +189,16 @@ else
 	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/revolt_$sec-$ver.zip
 	        fi
+	done
+else
+	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+		export RV_PRODUCT=$dev
+		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
+	        if [ $? -eq 0 ]; then
+			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
+			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
+			rm -rf $outdir/revolt_$dev-$ver.zip
+		fi
 	done
 fi
 
