@@ -48,13 +48,13 @@ echo -e $red""$txtrst"     \/_/ /_/"$bldcya"  \/_____/"$bldppl"  \/_/    "$bldbl
 echo -e $txtrst""$txtrst" "
 
 # Set version
-if [ "$RELEASE" == "nightly" ]
+if [ "$RELEASE" == "official" ]
 then
-    ver=nightly-"$DATE"
-    export RV_NIGHTLY="$DATE"
-else
     ver="$OFFICIAL"-stable
     export RV_BUILD="$OFFICIAL"
+else
+    ver=nightly-"$DATE"
+    export RV_NIGHTLY="$DATE"
 fi
 
 # Remove previous build info
