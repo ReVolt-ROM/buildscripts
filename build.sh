@@ -151,26 +151,13 @@ repo sync
 # Build and upload some devices
 if [ "$RELEASE" == "nightly" ]
 then
-	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
+	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 	        if [ $? -eq 0 ]; then
 			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
 			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
 			rm -rf $outdir/revolt_$dev-$ver.zip
-		fi
-	done
-
-	for dev2 in janice; do
-		export RV_PRODUCT=$dev2
-		cd /raid/johnhany97/revolt/frameworks/av/
-		git checkout revolt/cm-10.1
-		cd /raid/johnhany97/revolt/
-		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
-	        if [ $? -eq 0 ]; then
-			ncftpput -f login.cfg /$dev2/Nightlies/ $outdir/revolt_$dev2-$ver.zip
-			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/Nightlies/
-			rm -rf $outdir/revolt_$dev2-$ver.zip
 		fi
 	done
 else
