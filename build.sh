@@ -1,14 +1,8 @@
 #!/bin/bash
 
-# Set output directory
-if [ "$RELEASE" == "official" ]
-then
-outdir=/raid/johnhany97/stables
-else
-outdir=/raid/johnhany97/nightlies
-fi
-
-mkdir -p $outdir
+# Define this
+RELEASE="$1"
+OFFICIAL="$2"
 
 ydate=$(date -d '1 day ago' +"%m/%d/%Y")
 sdate="$3"
@@ -19,9 +13,15 @@ rdir=`pwd`
 # Start timinig
 res1=$(date +%s.%N)
 
-# Define this
-RELEASE="$1"
-OFFICIAL="$2"
+# Set output directory
+if [ "$RELEASE" == "official" ]
+then
+outdir=/raid/johnhany97/official
+else
+outdir=/raid/johnhany97/nightlies
+fi
+
+mkdir -p $outdir
 
 # Colorize and add text parameters
 red=$(tput setaf 1)             #  red
