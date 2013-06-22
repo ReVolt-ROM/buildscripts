@@ -155,9 +155,10 @@ then
 	for first in i9100 i9300; do
         	export RV_PRODUCT=$first
         	rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
-        	android-build -l -C -v $ver -o $outdir revolt_$first-userdebug
+        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
         	echo -e "ReVolt Compilation Finished for $first"
         	if [ $? -eq 0 ]; then
+        	        echo "Stable Build Successfully done for $first">>/raid/johnhany97/log.txt
         	        cd ;
  			echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
 			cd $outdir && mkdir tmp;
@@ -181,6 +182,7 @@ then
         	        scp $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
         	        rm -rf $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
         	else
+        	        echo "Stable Build FAILED for $first">>/raid/johnhany97/log.txt
         	        echo -e "${bldblu} Build wasn't successfully done"
         	fi
 	done
@@ -188,35 +190,44 @@ then
 	for sec in mako grouper maguro manta find5 i9100g yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
 	        export RV_PRODUCT=$sec
 	        repo sync
-	        android-build -l -C -v $ver -o $outdir revolt_$sec-userdebug
+	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
 	        echo -e "ReVolt Compilation Finished for $sec"
 	        if [ $? -eq 0 ]; then
+	                echo "Stable Build Successfully done for $sec">>/raid/johnhany97/log.txt
 	                ncftpput -f login.cfg /$sec/ $outdir/revolt_$sec-$ver.zip
 	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/revolt_$sec-$ver.zip
+	        else
+	                echo "Stable FAILED for $sec">>/raid/johnhany97/log.txt
 	        fi
 	done
 else
 	for dev in mako grouper maguro manta find5 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
-		android-build -l -C -v $ver -o $outdir revolt_$dev-userdebug
+		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 		echo -e "ReVolt Compilation Finished for $dev"
 	        if [ $? -eq 0 ]; then
+	                echo "Nightly Build Successfully done for $dev">>/raid/johnhany97/log.txt
 			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
 			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
 			rm -rf $outdir/revolt_$dev-$ver.zip
+		else
+		        echo "Nightly Build FAILED for $dev">>/raid/johnhany97/log.txt
 		fi
 	done
 	
 	for dev2 in i9100 i9100g i9300; do
 		export RV_PRODUCT=$dev2
 		rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
-		android-build -l -C -v $ver -o $outdir revolt_$dev2-userdebug
+		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
 		echo -e "ReVolt Compilation Finished for $dev2"
 	        if [ $? -eq 0 ]; then
+	        	echo "Nightly Build Successfully done for $dev2">>/raid/johnhany97/log.txt
 			ncftpput -f login.cfg /$dev2/Nightlies/ $outdir/revolt_$dev2-$ver.zip
 			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/Nightlies/
 			rm -rf $outdir/revolt_$dev2-$ver.zip
+		else
+			echo "Nightly Build FAILED for $dev2">>/raid/johnhany97/log.txt
 		fi
 	done
 fi
