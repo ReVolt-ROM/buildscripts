@@ -154,7 +154,7 @@ if [ "$RELEASE" == "official" ]
 then
 	for first in i9100 i9300; do
         	export RV_PRODUCT=$first
-        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
+        	android-build -l -C -v $ver -o $outdir revolt_$first-userdebug
         	if [ $? -eq 0 ]; then
         	        cd ;
  			echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
@@ -183,7 +183,7 @@ then
 
 	for sec in mako grouper maguro manta find5 i9100g yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
 	        export RV_PRODUCT=$sec
-	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
+	        android-build -l -C -v $ver -o $outdir revolt_$sec-userdebug
 	        if [ $? -eq 0 ]; then
 	                ncftpput -f login.cfg /$sec/ $outdir/revolt_$sec-$ver.zip
 	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
@@ -193,7 +193,7 @@ then
 else
 	for dev in mako grouper maguro manta find5 i9100 i9100g i9300 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
-		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
+		android-build -l -C -v $ver -o $outdir revolt_$dev-userdebug
 	        if [ $? -eq 0 ]; then
 			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
 			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
