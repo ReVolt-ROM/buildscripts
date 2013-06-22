@@ -187,7 +187,7 @@ then
         	fi
 	done
 
-	for sec in mako grouper maguro manta find5 i9100g yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
+	for sec in mako grouper maguro manta find5 i9100g yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 	        export RV_PRODUCT=$sec
 	        repo sync
 	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
