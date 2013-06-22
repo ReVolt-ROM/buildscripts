@@ -198,7 +198,7 @@ then
 	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/revolt_$sec-$ver.zip
 	        else
-	                echo "Stable FAILED for $sec">>/raid/johnhany97/log.txt
+	                echo "Stable Build FAILED for $sec">>/raid/johnhany97/log.txt
 	        fi
 	done
 else
