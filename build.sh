@@ -138,10 +138,21 @@ then
     cp changelog.txt changelog_"$RV_BUILD".txt
     ncftpput -f login.cfg /changelogs changelog_"$RV_BUILD".txt
 else
-
     echo "Generating and Uploading Changelog for Nightly"
     cp changelog.txt changelog_"$DATE".txt
     ncftpput -f login.cfg /changelogs/nightlies changelog_"$DATE".txt
+fi
+
+# Remove local copy of Changelog
+if [ "$RELEASE" == "official" ]
+then
+    echo "Removing Official Release Changelog"
+    rm -rf changelog.txt
+    rm -rf changelog_"$RV_BUILD".txt
+else
+    echo "Removing Nightly Release Changelog"
+    rm -rf changelog.txt
+    rm -rf changelog_"$DATE".txt
 fi
 
 # Switch to the build tree, clean and sync
