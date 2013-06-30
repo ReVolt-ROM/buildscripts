@@ -201,8 +201,22 @@ then
 	                echo "Stable Build FAILED for $sec">>/raid/johnhany97/log.txt
 	        fi
 	done
+
+	for third in n7000 n7100; do
+	        export RV_PRODUCT=$third
+	        android-build -C -v $ver -o $outdir revolt_$third-userdebug
+	        echo -e "ReVolt Compilation Finished for $third"
+	        if [ $? -eq 0 ]; then
+	                echo "Stable Build Successfully done for $third">>/raid/johnhany97/log.txt
+	                ncftpput -f login.cfg /$third/ $outdir/revolt_$third-$ver.zip
+	                scp $outdir/revolt_$third-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$third/
+	                rm -rf $outdir/revolt_$third-$ver.zip
+	        else
+	                echo "Stable Build FAILED for $third">>/raid/johnhany97/log.txt
+	        fi
+	done
 else
-	for dev in mako grouper maguro manta find5 yuga odin n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+	for dev in mako grouper maguro manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 		echo -e "ReVolt Compilation Finished for $dev"
@@ -216,7 +230,7 @@ else
 		fi
 	done
 	
-	for dev2 in i9100 i9100g i9300 n7000; do
+	for dev2 in i9100 i9100g i9300 n7000 n7100; do
 		export RV_PRODUCT=$dev2
 		rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
 		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
