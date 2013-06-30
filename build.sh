@@ -202,7 +202,7 @@ then
 	        fi
 	done
 else
-	for dev in mako grouper maguro manta find5 yuga odin n7000 n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+	for dev in mako grouper maguro manta find5 yuga odin n7100 m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 		echo -e "ReVolt Compilation Finished for $dev"
@@ -216,7 +216,7 @@ else
 		fi
 	done
 	
-	for dev2 in i9100 i9100g i9300; do
+	for dev2 in i9100 i9100g i9300 n7000; do
 		export RV_PRODUCT=$dev2
 		rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
 		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
