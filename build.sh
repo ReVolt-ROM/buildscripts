@@ -217,7 +217,9 @@ then
                         rm -f revolt_$sec-$ver.zip;
                         echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
                         zip -r -q ReVolt-JB-"$OFFICIAL"-$sec.zip *;
-                        cd $outdir
+                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$sec".zip $outdir/
+                        cd $outdir && rm -f -r tmp;
+                        cd $outdir;
 	                ncftpput -f login.cfg /$sec/ $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
@@ -244,7 +246,9 @@ then
                         rm -f revolt_$sec-$third.zip;
                         echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
                         zip -r -q ReVolt-JB-"$OFFICIAL"-$third.zip *;
-                        cd $outdir
+                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$sec".zip $outdir/
+                        cd $outdir && rm -f -r tmp;
+                        cd $outdir;
 	                ncftpput -f login.cfg /$third/ $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$third/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
