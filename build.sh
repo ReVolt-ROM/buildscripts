@@ -165,6 +165,7 @@ if [ "$RELEASE" == "official" ]
 then
 	for first in i9100 i9300; do
         	export RV_PRODUCT=$first
+        	cd /raid/johnhany97/revolt
         	rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
         	android-build -C -v $ver -o $outdir revolt_$first-userdebug
         	echo -e "ReVolt Compilation Finished for $first"
@@ -203,6 +204,7 @@ then
 	for sec in mako grouper maguro manta find5 i9100g yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 	        export RV_PRODUCT=$sec
 	        repo sync
+	        cd /raid/johnhany97/revolt
 	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
 	        echo -e "ReVolt Compilation Finished for $sec"
 	        if [ $? -eq 0 ]; then
@@ -234,6 +236,7 @@ then
 
 	for third in n7000 n7100; do
 	        export RV_PRODUCT=$third
+	        cd /raid/johnhany97/revolt
 	        android-build -C -v $ver -o $outdir revolt_$third-userdebug
 	        echo -e "ReVolt Compilation Finished for $third"
 	        if [ $? -eq 0 ]; then
@@ -265,6 +268,7 @@ then
 else
 	for dev in mako grouper maguro manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
+		cd /raid/johnhany97/revolt
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 		echo -e "ReVolt Compilation Finished for $dev"
 	        if [ $? -eq 0 ]; then
@@ -279,6 +283,7 @@ else
 	
 	for dev2 in i9100 i9100g i9300 n7000 n7100; do
 		export RV_PRODUCT=$dev2
+		cd /raid/johnhany97/revolt
 		rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
 		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
 		echo -e "ReVolt Compilation Finished for $dev2"
