@@ -192,6 +192,8 @@ then
         	        ncftpput -f login.cfg /$first/ $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
         	        scp $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
         	        rm -rf $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
+        	        rm -rf $outdir
+        	        mkdir -p $outdir
         	else
         	        echo "Stable Build FAILED for $first">>/raid/johnhany97/log.txt
         	        echo -e "${bldblu} Build wasn't successfully done"
@@ -223,6 +225,8 @@ then
 	                ncftpput -f login.cfg /$sec/ $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
+	                rm -rf $outdir
+	                mkdir -p $outdir
 	        else
 	                echo "Stable Build FAILED for $sec">>/raid/johnhany97/log.txt
 	        fi
@@ -252,6 +256,8 @@ then
 	                ncftpput -f login.cfg /$third/ $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$third/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
+	                rm -rf $outdir
+	                mkdir -p $outdir
 	        else
 	                echo "Stable Build FAILED for $third">>/raid/johnhany97/log.txt
 	        fi
