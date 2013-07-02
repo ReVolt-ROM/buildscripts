@@ -246,7 +246,7 @@ then
                         rm -f revolt_$sec-$third.zip;
                         echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
                         zip -r -q ReVolt-JB-"$OFFICIAL"-$third.zip *;
-                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$sec".zip $outdir/
+                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$third".zip $outdir/
                         cd $outdir && rm -f -r tmp;
                         cd $outdir;
 	                ncftpput -f login.cfg /$third/ $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
