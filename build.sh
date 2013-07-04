@@ -16,9 +16,9 @@ res1=$(date +%s.%N)
 # Set output directory
 if [ "$RELEASE" == "official" ]
 then
-outdir=/raid/johnhany97/official
+outdir=~/official
 else
-outdir=/raid/johnhany97/nightlies
+outdir=~/nightlies
 fi
 
 mkdir -p $outdir
@@ -156,106 +156,111 @@ else
 fi
 
 # Switch to the build tree, clean and sync
-cd /raid/johnhany97/revolt
+cd ~/revolt
 rm -rf out
-repo sync
+#repo sync
 
 # Build and upload some devices
 if [ "$RELEASE" == "official" ]
 then
-	for first in i9100 i9300; do
-        	export RV_PRODUCT=$first
-        	cd /raid/johnhany97/revolt
-        	rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
-        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
-        	echo -e "ReVolt Compilation Finished for $first"
-        	if [ $? -eq 0 ]; then
-        	        echo "Stable Build Successfully done for $first">>/raid/johnhany97/log.txt
-        	        cd ;
- 			echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
-			cd $outdir && mkdir tmp;
-			mv revolt_$first-$ver.zip tmp/;
-			cd $outdir/tmp/ && unzip revolt_$first-$ver.zip;
-			rm -f -r $outdir/tmp/META-INF/com/google/android/;
-			cp -r /raid/johnhany97/revolt/revolt/$first/android/ $outdir/tmp/META-INF/com/google/android/;
-			cd ;
-			cp -r /raid/johnhany97/revolt/revolt/$first/Revolt/ $outdir/tmp/;
-		 	echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
-			cd $ourdir/tmp/ ;
-			rm -f revolt_$first-$ver.zip;
-			echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-			zip -r -q ReVolt-JB-"$OFFICIAL"-"$first".zip *;
-			cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip $outdir/
-			cd ;
-			echo -e "${bldblu}Clearing the mess done ${txtrst}"
-			cd $outdir && rm -f -r tmp;
-			cd $outdir;
-        	        ncftpput -f login.cfg /$first/ $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
-        	        scp $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
-        	        rm -rf $outdir/ReVolt-JB"$OFFICIAL"-"$first".zip
-        	        rm -rf $outdir
-        	        mkdir -p $outdir
-        	else
-        	        echo "Stable Build FAILED for $first">>/raid/johnhany97/log.txt
-        	        echo -e "${bldblu} Build wasn't successfully done"
-        	fi
-	done
-
 	for sec in mako grouper maguro manta find5 i9100g yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 	        export RV_PRODUCT=$sec
-	        repo sync
-	        cd /raid/johnhany97/revolt
+	        cd ~/revolt
 	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
 	        echo -e "ReVolt Compilation Finished for $sec"
 	        if [ $? -eq 0 ]; then
-                        echo "Stable Build Successfully done for $sec">>/raid/johnhany97/log.txt
+                        echo "Stable Build Successfully done for $sec">>log.txt
                         cd ;
                         echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
                         cd $outdir && mkdir tmp;
                         mv revolt_$sec-$ver.zip tmp/;
                         cd $outdir/tmp/ && unzip revolt_$sec-$ver.zip;
                         cd ;
-                        cp -r /raid/johnhany97/revolt/revolt/default/system/ $outdir/tmp/;
+                        cp -r ~/revolt/revolt/default/system/ $outdir/tmp/;
                         echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
                         cd $outdir/tmp/ ;
                         rm -f revolt_$sec-$ver.zip;
                         echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-                        zip -r -q ReVolt-JB-"$OFFICIAL"-$sec.zip *;
+                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$sec".zip *;
                         cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$sec".zip $outdir/
                         cd $outdir && rm -f -r tmp;
                         cd $outdir;
+                        cd ~/revolt
 	                ncftpput -f login.cfg /$sec/ $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
 	                rm -rf $outdir
 	                mkdir -p $outdir
 	        else
-	                echo "Stable Build FAILED for $sec">>/raid/johnhany97/log.txt
+	                echo "Stable Build FAILED for $sec">>log.txt
 	        fi
+	done
+
+	for first in i9100 i9300; do
+        	export RV_PRODUCT=$first
+        	cd ~/revolt
+        	rm -rf ~/revolt/vendor/samsung/u8500-common
+        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
+        	echo -e "ReVolt Compilation Finished for $first"
+        	if [ $? -eq 0 ]; then
+        	        echo "Stable Build Successfully done for $first">>log.txt
+                        # Get Names
+                        VERSION1=revolt_$first-$ver
+                        PACKAGE1=$outdir/$VERSION1.zip
+                        cd ;
+                        echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
+                        cd $outdir && mkdir tmp;
+                        mv $VERSION1.zip tmp/;
+                        cd $outdir/tmp/ && unzip $VERSION1.zip;
+                        rm -f -r $outdir/tmp/META-INF/com/google/android/;
+                        cp -r ~/revolt/revolt/$first/android/ $outdir/tmp/META-INF/com/google/android/;
+                        cd ;
+                        cp -r ~/revolt/revolt/$first/Revolt/ $outdir/tmp/;
+                        echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
+                        cd $outdir/tmp/ ;
+                        rm -f $VERSION1.zip;
+                        echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
+                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$first".zip *;
+                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip $outdir/
+                        mkdir -p ~/revolt/ReVoltROM/ROM/FINAL/$first/
+                        mv $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip ~/revolt/ReVoltROM/ROM/FINAL/$first/;
+                        cd ;
+                        echo -e "${bldblu}Clearing the mess done ${txtrst}"
+                        cd $outdir && rm -f -r tmp && rm -f $VERSION1.zip;
+                        cd /revolt/
+        	        ncftpput -f login.cfg /$first/ ~/revolt/ReVoltROM/ROM/FINAL/$first/ReVolt-JB-"$OFFICIAL"-"$first".zip
+        	        scp ~/revolt/ReVoltROM/ROM/FINAL/$first/ReVolt-JB-"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
+                        rm -rf $outdir
+                        mkdir -p $outdir
+        	else
+        	        echo "Stable Build FAILED for $first">>log.txt
+        	        echo -e "${bldblu} Build wasn't successfully done"
+        	fi
 	done
 
 	for third in n7000 n7100; do
 	        export RV_PRODUCT=$third
-	        cd /raid/johnhany97/revolt
+	        cd ~/revolt
 	        android-build -C -v $ver -o $outdir revolt_$third-userdebug
 	        echo -e "ReVolt Compilation Finished for $third"
 	        if [ $? -eq 0 ]; then
-                        echo "Stable Build Successfully done for $third">>/raid/johnhany97/log.txt
+                        echo "Stable Build Successfully done for $third">>log.txt
                         cd ;
                         echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
                         cd $outdir && mkdir tmp;
                         mv revolt_$third-$ver.zip tmp/;
                         cd $outdir/tmp/ && unzip revolt_$third-$ver.zip;
                         cd ;
-                        cp -r /raid/johnhany97/revolt/revolt/default/system/ $outdir/tmp/;
+                        cp -r ~/revolt/revolt/default/system/ $outdir/tmp/;
                         echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
                         cd $outdir/tmp/ ;
                         rm -f revolt_$sec-$third.zip;
                         echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-                        zip -r -q ReVolt-JB-"$OFFICIAL"-$third.zip *;
+                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$third".zip *;
                         cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$third".zip $outdir/
                         cd $outdir && rm -f -r tmp;
                         cd $outdir;
+                        cd ~/revolt
 	                ncftpput -f login.cfg /$third/ $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
 	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$third/
 	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
@@ -265,14 +270,15 @@ then
 	                echo "Stable Build FAILED for $third">>/raid/johnhany97/log.txt
 	        fi
 	done
+
 else
 	for dev in mako grouper maguro manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
 		export RV_PRODUCT=$dev
-		cd /raid/johnhany97/revolt
+		cd ~/revolt
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
 		echo -e "ReVolt Compilation Finished for $dev"
 	        if [ $? -eq 0 ]; then
-	                echo "Nightly Build Successfully done for $dev">>/raid/johnhany97/log.txt
+	                echo "Nightly Build Successfully done for $dev">>log.txt
 			ncftpput -f login.cfg /$dev/Nightlies/ $outdir/revolt_$dev-$ver.zip
 			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/Nightlies/
 			rm -rf $outdir/revolt_$dev-$ver.zip
@@ -280,20 +286,20 @@ else
 		        echo "Nightly Build FAILED for $dev">>/raid/johnhany97/log.txt
 		fi
 	done
-	
+
 	for dev2 in i9100 i9100g i9300 n7000 n7100; do
 		export RV_PRODUCT=$dev2
-		cd /raid/johnhany97/revolt
-		rm -rf /raid/johnhany97/revolt/vendor/samsung/u8500-common
+		cd ~/revolt
+		rm -rf ~/revolt/vendor/samsung/u8500-common
 		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
 		echo -e "ReVolt Compilation Finished for $dev2"
 	        if [ $? -eq 0 ]; then
-	        	echo "Nightly Build Successfully done for $dev2">>/raid/johnhany97/log.txt
+	        	echo "Nightly Build Successfully done for $dev2">>log.txt
 			ncftpput -f login.cfg /$dev2/Nightlies/ $outdir/revolt_$dev2-$ver.zip
 			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/Nightlies/
 			rm -rf $outdir/revolt_$dev2-$ver.zip
 		else
-			echo "Nightly Build FAILED for $dev2">>/raid/johnhany97/log.txt
+			echo "Nightly Build FAILED for $dev2">>log.txt
 		fi
 	done
 fi
