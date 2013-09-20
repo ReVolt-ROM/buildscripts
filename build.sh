@@ -16,9 +16,14 @@ res1=$(date +%s.%N)
 # Set output directory
 if [ "$RELEASE" == "official" ]
 then
-outdir=~/official
+     outdir=~/official
 else
-outdir=~/nightlies
+    if ["$RELEASE" == "alpha" ]
+    then
+        outdir=~/alpha
+    else
+        outdir=~/nightlies
+    fi
 fi
 
 mkdir -p $outdir
@@ -40,12 +45,12 @@ txtrst=$(tput sgr0)             #  Reset
 echo -e '\0033\0143'
 clear
 
-echo -e $red""$txtrst"    ______ "$bldcya"   ______"$bldppl"    __   __ "$bldblu" ______    "$bldgrn"__       "$bldylw"______  "$txtrst"  "
-echo -e $red""$txtrst"   /\  == \ "$bldcya" /\  ___\ "$bldppl" /\ \ / /"$bldblu" /\  __ \  "$bldgrn"/\ \     "$bldylw"/\__  _\ "$txtrst"  "
-echo -e $red""$txtrst"   \ \  __< "$bldcya" \ \  __\ "$bldppl" \ \ \'/ "$bldblu" \ \ \/\ \ $bldgrn\ \ \____"$bldylw"\/_/\ \/ "$txtrst"  "
-echo -e $red""$txtrst"    \ \_\ \_\ "$bldcya"\ \_____\ "$bldppl"\ \__|  "$bldblu" \ \_____\ "$bldgrn"\ \_____\  "$bldylw"\ \_\ "$txtrst"  "
-echo -e $red""$txtrst"     \/_/ /_/"$bldcya"  \/_____/"$bldppl"  \/_/    "$bldblu" \/_____/  "$bldgrn"\/_____/   "$bldylw"\/_/ "$txtrst"  "
-echo -e $txtrst""$txtrst" "
+echo -e "    ______ "$bldcya"   ______"$bldppl"    __   __ "$bldblu" ______    "$bldgrn"__       "$bldylw"______  "$txtrst"  "
+echo -e "   /\  == \ "$bldcya" /\  ___\ "$bldppl" /\ \ / /"$bldblu" /\  __ \  "$bldgrn"/\ \     "$bldylw"/\__  _\ "$txtrst"  "
+echo -e "   \ \  __< "$bldcya" \ \  __\ "$bldppl" \ \ \'/ "$bldblu" \ \ \/\ \ "$bldgrn"\ \ \____"$bldylw"\/_/\ \/ "$txtrst"  "
+echo -e "    \ \_\ \_\ "$bldcya"\ \_____\ "$bldppl"\ \__|  "$bldblu" \ \_____\ "$bldgrn"\ \_____\  "$bldylw"\ \_\ "$txtrst"  "
+echo -e "     \/_/ /_/"$bldcya"  \/_____/"$bldppl"  \/_/    "$bldblu" \/_____/  "$bldgrn"\/_____/   "$bldylw"\/_/ "$txtrst"  "
+echo -e $txtrst" "
 
 # Set version
 if [ "$RELEASE" == "official" ]
@@ -53,8 +58,14 @@ then
     ver="$OFFICIAL"-stable
     export RV_BUILD="$OFFICIAL"
 else
-    ver=nightly-"$DATE"
-    export RV_NIGHTLY="$DATE"
+    if [ "$RELEASE" == "alpha" ]
+    then
+        ver=ALPHA-"$DATE"
+        export RV_ALPHA=1
+    else
+        ver=nightly-"$DATE"
+        export RV_NIGHTLY="$DATE"
+    fi
 fi
 
 # Remove previous build info
@@ -138,9 +149,16 @@ then
     cp changelog.txt changelog_"$RV_BUILD".txt
     ncftpput -f login.cfg /changelogs changelog_"$RV_BUILD".txt
 else
-    echo "Generating and Uploading Changelog for Nightly"
-    cp changelog.txt changelog_"$DATE".txt
-    ncftpput -f login.cfg /changelogs/nightlies changelog_"$DATE".txt
+    if [ "$RELEASE" == "alpha" ]
+    then
+        echo "Generating and Uploading Changelog for Alpha"
+        cp changelog.txt changelog_alpha_"$DATE".txt
+        ncftpput -f login.cfg /changelogs/alpha changelog_alpha_"$DATE".txt
+    else
+        echo "Generating and Uploading Changelog for Nightly"
+        cp changelog.txt changelog_"$DATE".txt
+        ncftpput -f login.cfg /changelogs/nightlies changelog_"$DATE".txt
+    fi
 fi
 
 # Remove local copy of Changelog
@@ -150,9 +168,16 @@ then
     rm -rf changelog.txt
     rm -rf changelog_"$RV_BUILD".txt
 else
-    echo "Removing Nightly Release Changelog"
-    rm -rf changelog.txt
-    rm -rf changelog_"$DATE".txt
+    if [ "$RELEASE" == "alpha" ]
+    then
+        echo "Removing Alpha Release Changelog"
+        rm -rf changelog.txt
+        rm -rf changelog_alpha_"$DATE".txt
+    else
+        echo "Removing Nightly Release Changelog"
+        rm -rf changelog.txt
+        rm -rf changelog_"$DATE".txt
+    fi
 fi
 
 # Switch to the build tree, clean and sync
@@ -163,7 +188,7 @@ rm -rf out
 # Build and upload some devices
 if [ "$RELEASE" == "official" ]
 then
-	for sec in mako grouper maguro manta find5 i9100g yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+	for sec in mako grouper maguro flo i9100 i9300 n7000 n7100 manta find5 i9100g yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx; do
 	        export RV_PRODUCT=$sec
 	        cd ~/revolt
 	        android-build -C -v $ver -o $outdir revolt_$sec-userdebug
@@ -196,83 +221,25 @@ then
 	        fi
 	done
 
-	for first in i9100 i9300; do
-        	export RV_PRODUCT=$first
-        	cd ~/revolt
-        	rm -rf ~/revolt/vendor/samsung/u8500-common
-        	android-build -C -v $ver -o $outdir revolt_$first-userdebug
-        	echo -e "ReVolt Compilation Finished for $first"
-        	if [ $? -eq 0 ]; then
-        	        echo "Stable Build Successfully done for $first">>log.txt
-                        # Get Names
-                        VERSION1=revolt_$first-$ver
-                        PACKAGE1=$outdir/$VERSION1.zip
-                        cd ;
-                        echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
-                        cd $outdir && mkdir tmp;
-                        mv $VERSION1.zip tmp/;
-                        cd $outdir/tmp/ && unzip $VERSION1.zip;
-                        rm -f -r $outdir/tmp/META-INF/com/google/android/;
-                        cp -r ~/revolt/revolt/$first/android/ $outdir/tmp/META-INF/com/google/android/;
-                        cd ;
-                        cp -r ~/revolt/revolt/$first/Revolt/ $outdir/tmp/;
-                        echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
-                        cd $outdir/tmp/ ;
-                        rm -f $VERSION1.zip;
-                        echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$first".zip *;
-                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip $outdir/
-                        mkdir -p ~/revolt/ReVoltROM/ROM/FINAL/$first/
-                        mv $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$first".zip ~/revolt/ReVoltROM/ROM/FINAL/$first/;
-                        cd ;
-                        echo -e "${bldblu}Clearing the mess done ${txtrst}"
-                        cd $outdir && rm -f -r tmp && rm -f $VERSION1.zip;
-                        cd /revolt/
-        	        ncftpput -f login.cfg /$first/ ~/revolt/ReVoltROM/ROM/FINAL/$first/ReVolt-JB-"$OFFICIAL"-"$first".zip
-        	        scp ~/revolt/ReVoltROM/ROM/FINAL/$first/ReVolt-JB-"$OFFICIAL"-"$first".zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$first/
-                        rm -rf $outdir
-                        mkdir -p $outdir
-        	else
-        	        echo "Stable Build FAILED for $first">>log.txt
-        	        echo -e "${bldblu} Build wasn't successfully done"
-        	fi
-	done
-
-	for third in n7000 n7100; do
-	        export RV_PRODUCT=$third
-	        cd ~/revolt
-	        android-build -C -v $ver -o $outdir revolt_$third-userdebug
-	        echo -e "ReVolt Compilation Finished for $third"
-	        if [ $? -eq 0 ]; then
-                        echo "Stable Build Successfully done for $third">>log.txt
-                        cd ;
-                        echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
-                        cd $outdir && mkdir tmp;
-                        mv revolt_$third-$ver.zip tmp/;
-                        cd $outdir/tmp/ && unzip revolt_$third-$ver.zip;
-                        cd ;
-                        cp -r ~/revolt/revolt/default/system/ $outdir/tmp/;
-                        echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
-                        cd $outdir/tmp/ ;
-                        rm -f revolt_$sec-$third.zip;
-                        echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$third".zip *;
-                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$third".zip $outdir/
-                        cd $outdir && rm -f -r tmp;
-                        cd $outdir;
-                        cd ~/revolt
-	                ncftpput -f login.cfg /$third/ $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
-	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$third/
-	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$third.zip
-	                rm -rf $outdir
-	                mkdir -p $outdir
-	        else
-	                echo "Stable Build FAILED for $third">>/raid/johnhany97/log.txt
-	        fi
-	done
-
 else
-	for dev in mako grouper maguro manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx janice; do
+    if [ "$RELEASE" == "alpha" ]
+    then
+	for dev in mako grouper maguro i9100 i9100g i9300 n7000 n7100 manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx ; do
+		export RV_PRODUCT=$dev
+		cd ~/revolt
+		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
+		echo -e "ReVolt Compilation Finished for $dev"
+	        if [ $? -eq 0 ]; then
+	                echo "ALPHA Build Successfully done for $dev">>log.txt
+			ncftpput -f login.cfg /$dev/ALPHA/ $outdir/revolt_$dev-$ver.zip
+			scp $outdir/revolt_$dev-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev/ALPHA/
+			rm -rf $outdir/revolt_$dev-$ver.zip
+		else
+		        echo "ALPHA Build FAILED for $dev">>/raid/johnhany97/log.txt
+		fi
+	done
+    else
+	for dev in mako grouper maguro i9100 i9100g i9300 n7000 n7100 manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx ; do
 		export RV_PRODUCT=$dev
 		cd ~/revolt
 		android-build -C -v $ver -o $outdir revolt_$dev-userdebug
@@ -286,22 +253,7 @@ else
 		        echo "Nightly Build FAILED for $dev">>/raid/johnhany97/log.txt
 		fi
 	done
-
-	for dev2 in i9100 i9100g i9300 n7000 n7100; do
-		export RV_PRODUCT=$dev2
-		cd ~/revolt
-		rm -rf ~/revolt/vendor/samsung/u8500-common
-		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
-		echo -e "ReVolt Compilation Finished for $dev2"
-	        if [ $? -eq 0 ]; then
-	        	echo "Nightly Build Successfully done for $dev2">>log.txt
-			ncftpput -f login.cfg /$dev2/Nightlies/ $outdir/revolt_$dev2-$ver.zip
-			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/Nightlies/
-			rm -rf $outdir/revolt_$dev2-$ver.zip
-		else
-			echo "Nightly Build FAILED for $dev2">>log.txt
-		fi
-	done
+    fi
 fi
 
 # Time elapsed for a full set of builds
