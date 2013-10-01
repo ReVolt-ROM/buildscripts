@@ -183,7 +183,7 @@ fi
 # Switch to the build tree, clean and sync
 cd ~/revolt
 rm -rf out
-#repo sync
+repo sync
 
 # Build and upload some devices
 if [ "$RELEASE" == "official" ]
@@ -251,6 +251,21 @@ else
 			rm -rf $outdir/revolt_$dev-$ver.zip
 		else
 		        echo "Nightly Build FAILED for $dev">>/raid/johnhany97/log.txt
+		fi
+	done
+	for dev2 in i9500 ; do
+		export RV_PRODUCT=$dev2
+		cd ~/revolt
+		rm -rf device/samsung/manta
+		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
+		echo -e "ReVolt Compilation Finished for $dev2"
+	        if [ $? -eq 0 ]; then
+	                echo "Nightly Build Successfully done for $dev2">>log.txt
+			ncftpput -f login.cfg /$dev2/Nightlies/ $outdir/revolt_$dev2-$ver.zip
+			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/Nightlies/
+			rm -rf $outdir/revolt_$dev2-$ver.zip
+		else
+		        echo "Nightly Build FAILED for $dev2">>/raid/johnhany97/log.txt
 		fi
 	done
     fi
