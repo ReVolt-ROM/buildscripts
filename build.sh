@@ -238,6 +238,21 @@ else
 		        echo "ALPHA Build FAILED for $dev">>/raid/johnhany97/log.txt
 		fi
 	done
+	for dev2 in i9500 ; do
+		export RV_PRODUCT=$dev2
+		cd ~/revolt
+		rm -rf device/samsung/manta
+		android-build -C -v $ver -o $outdir revolt_$dev2-userdebug
+		echo -e "ReVolt Compilation Finished for $dev2"
+	        if [ $? -eq 0 ]; then
+	                echo "ALPHA Build Successfully done for $dev2">>log.txt
+			ncftpput -f login.cfg /$dev2/ALPHA/ $outdir/revolt_$dev2-$ver.zip
+			scp $outdir/revolt_$dev2-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$dev2/ALPHA/
+			rm -rf $outdir/revolt_$dev2-$ver.zip
+		else
+		        echo "ALPHA Build FAILED for $dev2">>/raid/johnhany97/log.txt
+		fi
+	done
     else
 	for dev in mako grouper maguro i9100 i9100g i9300 n7000 n7100 manta find5 yuga odin m7ul m7att m7tmo m7spr jfltecan jfltetmo jfltespr jflteusc jfltevzw jflteatt n8000 n8013 jfltexx ; do
 		export RV_PRODUCT=$dev
