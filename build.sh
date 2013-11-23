@@ -481,27 +481,9 @@ then
 	        echo -e "ReVolt Compilation Finished for $sec"
 	        if [ $? -eq 0 ]; then
                         echo "Stable Build Successfully done for $sec">>log.txt
-                        cd ;
-                        echo -e "${bldblu}Sanitizing area for ReVolt Additions ${txtrst}"
-                        cd $outdir && mkdir tmp;
-                        mv revolt_$sec-$ver.zip tmp/;
-                        cd $outdir/tmp/ && unzip revolt_$sec-$ver.zip;
-                        cd ;
-                        cp -r ~/revolt/revolt/default/system/ $outdir/tmp/;
-                        echo -e "${bldblu}Added ReVolt Additions for Official Build${txtrst}"
-                        cd $outdir/tmp/ ;
-                        rm -f revolt_$sec-$ver.zip;
-                        echo -e "${bldblu}Finalize ReVolt Official ZIP ${txtrst}"
-                        zip -r -q ReVolt-JB-"$OFFICIAL"-"$sec".zip *;
-                        cp $outdir/tmp/ReVolt-JB-"$OFFICIAL"-"$sec".zip $outdir/
-                        cd $outdir && rm -f -r tmp;
-                        cd $outdir;
-                        cd ~/revolt
-	                ncftpput -f login.cfg /$sec/ $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
-	                scp $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
-	                rm -rf $outdir/ReVolt-JB-"$OFFICIAL"-$sec.zip
-	                rm -rf $outdir
-	                mkdir -p $outdir
+			ncftpput -f login.cfg /$sec/ $outdir/revolt_$sec-$ver.zip
+	                scp $outdir/revolt_$sec-$ver.zip johnhany97@upload.goo.im:~/public_html/ReVolt_JB_$sec/
+			rm -rf $outdir/revolt_$sec-$ver.zip
 	        else
 	                echo "Stable Build FAILED for $sec">>log.txt
 	        fi
