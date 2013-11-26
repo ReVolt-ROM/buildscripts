@@ -277,3 +277,4 @@ else
 		        echo "Nightly Build FAILED for $dev2">>/raid/johnhany97/log.txt
 		fi
 	done
+fi
