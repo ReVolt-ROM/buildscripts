@@ -277,4 +277,9 @@ else
 		        echo "Nightly Build FAILED for $dev2">>/raid/johnhany97/log.txt
 		fi
 	done
+        fi
 fi
+
+# Time elapsed for a full set of builds
+res2=$(date +%s.%N)
+echo "${bldgrn}Total time elapsed: ${txtrst}${grn}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
