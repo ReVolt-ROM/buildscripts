@@ -64,6 +64,13 @@ fi
 
 export RV_PRODUCT="$DEVICE"
 
+export USE_CCACHE=1
+wait
+export CCACHE_DIR=~/revolt/.ccache
+wait
+prebuilts/misc/linux-x86/ccache/ccache -M 50G
+wait
+
 # Start the Build
 echo -e "${bldblu}Setting up build environment ${txtrst}"
 . build/envsetup.sh
